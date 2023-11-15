@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// If an envoy API was set and config is set to wait on envoy
-	if config.EnvoyAdminAPI != "" && config.StartWithoutEnvoy == false {
+	if config.EnvoyAdminAPI != "" && !config.StartWithoutEnvoy {
 		log.Info("blocking until envoy starts")
 		block()
 	}

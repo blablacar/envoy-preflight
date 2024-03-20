@@ -34,7 +34,9 @@ func main() {
 
 	// If an envoy API was set and config is set to wait on envoy
 	if config.EnvoyAdminAPI != "" && !config.StartWithoutEnvoy {
-		log.Info("blocking until envoy starts")
+		if config.LoggingEnabled {
+			log.Info("blocking until envoy starts")
+		}
 		block()
 	}
 
@@ -134,7 +136,9 @@ func killGenericEndpoints() {
 }
 
 func killIstioWithAPI() (int, error) {
-	log.Infof("stopping  Istio using Istio API '%s' (intended for Istio >v1.2)", config.IstioQuitAPI)
+	if config.LoggingEnabled {
+		log.Infof("stopping  Istio using Istio API '%s' (intended for Istio >v1.2)", config.IstioQuitAPI)
+	}
 
 	url := fmt.Sprintf("%s/quitquitquit", config.IstioQuitAPI)
 	resp := typhon.NewRequest(context.Background(), "POST", url, nil).Send().Response()
@@ -142,7 +146,9 @@ func killIstioWithAPI() (int, error) {
 		log.Warnf("sent POST to '%s', error: %s", url, resp.Error)
 		return 200, resp.Error
 	}
-	log.Infof("sent quitquitquit to Istio, status code: %d", resp.StatusCode)
+	if config.LoggingEnabled {
+		log.Infof("sent quitquitquit to Istio, status code: %d", resp.StatusCode)
+	}
 
 	return resp.StatusCode, resp.Error
 }
